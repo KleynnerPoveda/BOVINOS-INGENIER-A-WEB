@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Registro Bovino</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <h1>Registro Bovino</h1>
+    <p>Control y visualización de los animales de la finca</p>
+  </header>
+
+  <main>
+    <section class="resumen">
+      <div class="card"><span>Total de bovinos</span><strong id="total">0</strong></div>
+      <div class="card"><span>Peso promedio</span><strong id="promedio">0 kg</strong></div>
+      <div class="card"><span>Machos</span><strong id="machos">0</strong></div>
+      <div class="card"><span>Hembras</span><strong id="hembras">0</strong></div>
+    </section>
+
+    <section class="panel">
+      <h2>Registrar bovino</h2>
+      <form id="formBovino">
+        <label>Identificación
+          <input id="idBovino" required placeholder="Ej. BOV-001">
+        </label>
+        <label>Peso (kg)
+          <input id="peso" type="number" min="1" required placeholder="Ej. 320">
+        </label>
+        <label>Color
+          <input id="color" required placeholder="Ej. Blanco y negro">
+        </label>
+        <label>Sexo
+          <select id="sexo" required>
+            <option value="">Seleccionar</option>
+            <option value="Macho">Macho</option>
+            <option value="Hembra">Hembra</option>
+          </select>
+        </label>
+        <label>Edad (años)
+          <input id="edad" type="number" min="0" step="0.1" required placeholder="Ej. 2.5">
+        </label>
+        <label>Raza
+          <input id="raza" required placeholder="Ej. Brahman">
+        </label>
+        <label>Estado de salud
+          <select id="salud">
+            <option>Bueno</option>
+            <option>En observación</option>
+            <option>En tratamiento</option>
+          </select>
+        </label>
+        <button type="submit">Agregar bovino</button>
+      </form>
+    </section>
+
+    <section class="panel">
+      <div class="tabla-cabecera">
+        <h2>Bovinos registrados</h2>
+        <input id="buscar" placeholder="Buscar por ID, raza o color...">
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th><th>Peso</th><th>Color</th><th>Sexo</th>
+              <th>Edad</th><th>Raza</th><th>Salud</th><th>Acción</th>
+            </tr>
+          </thead>
+          <tbody id="tablaBovinos"></tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+  <footer>Registro Bovino · Datos de ejemplo editables</footer>
+  <script src="script.js"></script>
+</body>
+</html>
