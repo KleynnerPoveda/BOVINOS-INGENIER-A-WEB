@@ -1,233 +1,198 @@
 
-let bovinos = [];
-
-// Sistema de cuentas
-let cuentas = [];
-let usuarioActual = null;
-let modoCuenta = "login";
-
-const accountButton = document.getElementById("accountButton");
-const accountMenu = document.getElementById("accountMenu");
-const accountOptions = document.getElementById("accountOptions");
-const accountFormContainer = document.getElementById("accountFormContainer");
-const accountForm = document.getElementById("accountForm");
-const logoutButton = document.getElementById("logoutButton");
-
-// Abrir y cerrar menú
-accountButton.addEventListener("click", () => {
-    accountMenu.classList.toggle("show");
-});
-
-// Cerrar menú al hacer clic fuera
-document.addEventListener("click", event => {
-    if (!event.target.closest(".account-container")) {
-        accountMenu.classList.remove("show");
+const bovinosIniciales = [
+    {
+        identificacion: "BOV-001",
+        nombre: "Lucero",
+        raza: "Holstein",
+        sexo: "Hembra",
+        edad: 36,
+        peso: 520,
+        color: "Blanco y negro",
+        salud: "Saludable",
+        observaciones: "Buen estado general"
+    },
+    {
+        identificacion: "BOV-002",
+        nombre: "Trueno",
+        raza: "Brahman",
+        sexo: "Macho",
+        edad: 42,
+        peso: 680,
+        color: "Gris",
+        salud: "Saludable",
+        observaciones: "Buen desarrollo"
+    },
+    {
+        identificacion: "BOV-003",
+        nombre: "Luna",
+        raza: "Jersey",
+        sexo: "Hembra",
+        edad: 28,
+        peso: 410,
+        color: "Marrón claro",
+        salud: "En observación",
+        observaciones: "Requiere seguimiento"
+    },
+    {
+        identificacion: "BOV-004",
+        nombre: "Relámpago",
+        raza: "Angus",
+        sexo: "Macho",
+        edad: 30,
+        peso: 590,
+        color: "Negro",
+        salud: "Saludable",
+        observaciones: "Buen desarrollo"
+    },
+    {
+        identificacion: "BOV-005",
+        nombre: "Estrella",
+        raza: "Simmental",
+        sexo: "Hembra",
+        edad: 48,
+        peso: 610,
+        color: "Blanco y rojo",
+        salud: "Saludable",
+        observaciones: "En etapa adulta"
+    },
+    {
+        identificacion: "BOV-006",
+        nombre: "Centella",
+        raza: "Gyr",
+        sexo: "Hembra",
+        edad: 24,
+        peso: 390,
+        color: "Rojo",
+        salud: "En tratamiento",
+        observaciones: "Requiere seguimiento"
     }
-});
+];
 
-// Mostrar formulario de inicio de sesión
-document.getElementById("showLogin").addEventListener("click", () => {
-    mostrarFormularioCuenta("login");
-});
+let bovinos = JSON.parse(localStorage.getItem("bovinos")) || bovinosIniciales;
+let usuarios = JSON.parse(localStorage.getItem("usuarios")) || [];
+let modoCuenta = "registro";
+let editando = null;
+let graficaActual = null;
 
-// Mostrar formulario de creación de cuenta
-document.getElementById("showCreate").addEventListener("click", () => {
-    mostrarFormularioCuenta("create");
-});
-
-// Cambiar formulario de cuenta
-function mostrarFormularioCuenta(modo) {
-    modoCuenta = modo;
-
-    accountOptions.classList.add("hidden");
-    accountFormContainer.classList.remove("hidden");
-    logoutButton.classList.add("hidden");
-
-    const nameField = document.getElementById("nameField");
-    const title = document.getElementById("accountFormTitle");
-    const submit = document.getElementById("accountSubmit");
-
-    if (modo === "create") {
-        title.textContent = "Crear cuenta";
-        submit.textContent = "Crear cuenta";
-        nameField.classList.remove("hidden");
-        document.getElementById("userName").required = true;
-    } else {
-        title.textContent = "Iniciar sesión";
-        submit.textContent = "Iniciar sesión";
-        nameField.classList.add("hidden");
-        document.getElementById("userName").required = false;
-    }
-
-    accountForm.reset();
+function guardarBovinos() {
+    localStorage.setItem("bovinos", JSON.stringify(bovinos));
 }
 
-// Volver a las opciones de cuenta
-document.getElementById("backAccount").addEventListener("click", () => {
-    accountFormContainer.classList.add("hidden");
-    accountOptions.classList.remove("hidden");
-});
-
-// Crear cuenta o iniciar sesión
-accountForm.addEventListener("submit", event => {
-    event.preventDefault();
-
-    const nombre = document.getElementById("userName").value.trim();
-    const correo = document.getElementById("userEmail").value.trim().toLowerCase();
-    const contraseña = document.getElementById("userPassword").value;
-
-    if (modoCuenta === "create") {
-        if (cuentas.some(cuenta => cuenta.correo === correo)) {
-            alert("Ya existe una cuenta con ese correo electrónico.");
-            return;
-        }
-
-        const nuevaCuenta = {
-            nombre,
-            correo,
-            contraseña
-        };
-
-        cuentas.push(nuevaCuenta);
-        usuarioActual = nuevaCuenta;
-
-        alert("Cuenta creada correctamente.");
-    } else {
-        const cuenta = cuentas.find(cuenta =>
-            cuenta.correo === correo &&
-            cuenta.contraseña === contraseña
-        );
-
-        if (!cuenta) {
-            alert("Correo electrónico o contraseña incorrectos.");
-            return;
-        }
-
-        usuarioActual = cuenta;
-        alert("Sesión iniciada correctamente.");
-    }
-
-    actualizarCuenta();
-});
-
-// Cerrar sesión
-logoutButton.addEventListener("click", () => {
-    usuarioActual = null;
-    actualizarCuenta();
-
-    alert("La sesión se ha cerrado correctamente.");
-});
-
-// Actualizar interfaz de cuenta
-function actualizarCuenta() {
-    const accountName = document.getElementById("accountName");
-
-    if (usuarioActual) {
-        accountName.textContent = usuarioActual.nombre;
-        accountOptions.classList.add("hidden");
-        accountFormContainer.classList.add("hidden");
-        logoutButton.classList.remove("hidden");
-    } else {
-        accountName.textContent = "Mi cuenta";
-        accountOptions.classList.remove("hidden");
-        accountFormContainer.classList.add("hidden");
-        logoutButton.classList.add("hidden");
-    }
-
-    accountForm.reset();
+function guardarUsuarios() {
+    localStorage.setItem("usuarios", JSON.stringify(usuarios));
 }
 
-// Botón de bienvenida para bajar al registro
-document.getElementById("goToRegistration").addEventListener("click", () => {
-    document.getElementById("registro").scrollIntoView({
-        behavior: "smooth",
-        block: "start"
+function cambiarVista(id) {
+    document.querySelectorAll(".vista").forEach(vista => {
+        vista.classList.remove("activa");
+    });
+
+    document.querySelectorAll(".nav-btn").forEach(boton => {
+        boton.classList.remove("activo");
+    });
+
+    document.getElementById(id).classList.add("activa");
+
+    const boton = document.querySelector(`[data-vista="${id}"]`);
+
+    if (boton) {
+        boton.classList.add("activo");
+    }
+
+    if (id === "bovinos") {
+        mostrarBovinos();
+    }
+
+    actualizarEstadisticas();
+}
+
+document.querySelectorAll("[data-vista]").forEach(boton => {
+    boton.addEventListener("click", () => {
+        cambiarVista(boton.dataset.vista);
     });
 });
 
-// Navegación entre apartados
-document.querySelectorAll(".nav-button").forEach(button => {
-    button.addEventListener("click", () => {
-        document.querySelectorAll(".nav-button").forEach(btn => {
-            btn.classList.remove("active");
-        });
-
-        document.querySelectorAll(".section").forEach(section => {
-            section.classList.remove("active");
-        });
-
-        button.classList.add("active");
-
-        const seccion = button.dataset.section;
-        document.getElementById(seccion).classList.add("active");
+document.querySelectorAll("[data-ir]").forEach(boton => {
+    boton.addEventListener("click", () => {
+        cambiarVista(boton.dataset.ir);
     });
 });
 
-// Registrar bovino
-const formulario = document.getElementById("formBovino");
-const tablaBovinos = document.getElementById("tablaBovinos");
+function actualizarEstadisticas() {
+    document.getElementById("totalBovinos").textContent = bovinos.length;
 
-formulario.addEventListener("submit", function(event) {
-    event.preventDefault();
+    document.getElementById("totalMachos").textContent =
+        bovinos.filter(b => b.sexo === "Macho").length;
 
-    const identificacion = document.getElementById("identificacion").value.trim();
+    document.getElementById("totalHembras").textContent =
+        bovinos.filter(b => b.sexo === "Hembra").length;
+}
 
-    const existe = bovinos.some(bovino =>
-        bovino.identificacion.toLowerCase() === identificacion.toLowerCase()
-    );
-
-    if (existe) {
-        alert("Ya existe un bovino con esa identificación.");
-        return;
-    }
-
-    const nuevoBovino = {
-        identificacion,
-        peso: Number(document.getElementById("peso").value),
-        color: document.getElementById("color").value.trim(),
-        sexo: document.getElementById("sexo").value,
-        edad: Number(document.getElementById("edad").value),
-        raza: document.getElementById("raza").value.trim(),
-        salud: document.getElementById("salud").value,
-        alimentacion: document.getElementById("alimentacion").value.trim(),
-        medicamentos: document.getElementById("medicamentos").value.trim()
-    };
-
-    bovinos.push(nuevoBovino);
-
-    formulario.reset();
-
-    actualizarAplicacion();
-
-    alert("Bovino registrado correctamente.");
-});
-
-// Mostrar bovinos
 function mostrarBovinos() {
-    tablaBovinos.innerHTML = "";
+    const tabla = document.getElementById("tablaBovinos");
+    const busqueda = document.getElementById("buscarBovino").value
+        .trim()
+        .toLowerCase();
 
-    const mensaje = document.getElementById("mensajeSinDatos");
+    const sexo = document.getElementById("filtroSexo").value;
+    const orden = document.getElementById("ordenarBovinos").value;
 
-    if (bovinos.length === 0) {
-        mensaje.style.display = "block";
-        return;
+    let resultados = bovinos.filter(bovino => {
+        const coincideBusqueda =
+            bovino.nombre.toLowerCase().includes(busqueda) ||
+            bovino.identificacion.toLowerCase().includes(busqueda);
+
+        const coincideSexo =
+            sexo === "Todos" || bovino.sexo === sexo;
+
+        return coincideBusqueda && coincideSexo;
+    });
+
+    if (orden === "pesoMenor") {
+        resultados.sort((a, b) => a.peso - b.peso);
     }
 
-    mensaje.style.display = "none";
+    if (orden === "pesoMayor") {
+        resultados.sort((a, b) => b.peso - a.peso);
+    }
 
-    bovinos.forEach((bovino, index) => {
+    if (orden === "edadMenor") {
+        resultados.sort((a, b) => a.edad - b.edad);
+    }
+
+    if (orden === "edadMayor") {
+        resultados.sort((a, b) => b.edad - a.edad);
+    }
+
+    if (orden === "nombre") {
+        resultados.sort((a, b) => a.nombre.localeCompare(b.nombre));
+    }
+
+    if (orden === "reciente") {
+        resultados.reverse();
+    }
+
+    tabla.innerHTML = "";
+
+    document.getElementById("contadorResultados").textContent =
+        `Se encontraron ${resultados.length} de ${bovinos.length} bovinos.`;
+
+    document.getElementById("mensajeSinResultados")
+        .classList.toggle("oculto", resultados.length > 0);
+
+    resultados.forEach(bovino => {
         const fila = document.createElement("tr");
 
         const valores = [
             bovino.identificacion,
+            bovino.nombre,
+            bovino.raza,
+            bovino.sexo,
+            `${bovino.edad} meses`,
             `${bovino.peso} kg`,
             bovino.color,
-            bovino.sexo,
-            `${bovino.edad} años`,
-            bovino.raza,
             bovino.salud,
-            bovino.alimentacion,
-            bovino.medicamentos || "No registrado"
+            bovino.observaciones || "Sin observaciones"
         ];
 
         valores.forEach(valor => {
@@ -236,143 +201,367 @@ function mostrarBovinos() {
             fila.appendChild(celda);
         });
 
-        const celdaAcciones = document.createElement("td");
-        const botonEliminar = document.createElement("button");
+        const acciones = document.createElement("td");
 
-        botonEliminar.textContent = "Eliminar";
-        botonEliminar.className = "delete-button";
-
-        botonEliminar.addEventListener("click", () => {
-            eliminarBovino(index);
+        const botonEditar = document.createElement("button");
+        botonEditar.textContent = "Editar";
+        botonEditar.className = "btn-editar";
+        botonEditar.addEventListener("click", () => {
+            editarBovino(bovino.identificacion);
         });
 
-        celdaAcciones.appendChild(botonEliminar);
-        fila.appendChild(celdaAcciones);
+        const botonEliminar = document.createElement("button");
+        botonEliminar.textContent = "Eliminar";
+        botonEliminar.className = "btn-eliminar";
+        botonEliminar.addEventListener("click", () => {
+            eliminarBovino(bovino.identificacion);
+        });
 
-        tablaBovinos.appendChild(fila);
+        acciones.appendChild(botonEditar);
+        acciones.appendChild(botonEliminar);
+        fila.appendChild(acciones);
+
+        tabla.appendChild(fila);
     });
 }
 
-// Eliminar bovino
-function eliminarBovino(index) {
-    const confirmar = confirm(
-        "¿Estás seguro de que deseas eliminar este registro?"
+document.getElementById("buscarBovino").addEventListener("input", mostrarBovinos);
+document.getElementById("filtroSexo").addEventListener("change", mostrarBovinos);
+document.getElementById("ordenarBovinos").addEventListener("change", mostrarBovinos);
+
+document.getElementById("btnLimpiarFiltros").addEventListener("click", () => {
+    document.getElementById("buscarBovino").value = "";
+    document.getElementById("filtroSexo").value = "Todos";
+    document.getElementById("ordenarBovinos").value = "reciente";
+
+    mostrarBovinos();
+});
+
+document.getElementById("formBovino").addEventListener("submit", evento => {
+    evento.preventDefault();
+
+    const identificacion = document.getElementById("identificacion").value
+        .trim()
+        .toUpperCase();
+
+    const datos = {
+        identificacion,
+        nombre: document.getElementById("nombre").value.trim(),
+        raza: document.getElementById("raza").value,
+        sexo: document.getElementById("sexo").value,
+        edad: Number(document.getElementById("edad").value),
+        peso: Number(document.getElementById("peso").value),
+        color: document.getElementById("color").value.trim(),
+        salud: document.getElementById("salud").value,
+        observaciones: document.getElementById("observaciones").value.trim()
+    };
+
+    const duplicado = bovinos.some(b =>
+        b.identificacion === identificacion &&
+        b.identificacion !== editando
     );
 
-    if (!confirmar) {
+    if (duplicado) {
+        alert("Este bovino ya fue registrado. La identificación ya existe.");
         return;
     }
 
-    bovinos.splice(index, 1);
-    actualizarAplicacion();
-}
+    if (editando) {
+        const indice = bovinos.findIndex(b => b.identificacion === editando);
 
-// Actualizar estadísticas
-function actualizarEstadisticas() {
-    document.getElementById("totalBovinos").textContent = bovinos.length;
+        if (indice !== -1) {
+            bovinos[indice] = datos;
+        }
 
-    if (bovinos.length === 0) {
-        document.getElementById("pesoPromedio").textContent = "0 kg";
+        editando = null;
+        alert("Bovino actualizado correctamente.");
     } else {
-        const totalPeso = bovinos.reduce(
-            (total, bovino) => total + bovino.peso,
-            0
-        );
-
-        const promedio = totalPeso / bovinos.length;
-
-        document.getElementById("pesoPromedio").textContent =
-            `${promedio.toFixed(1)} kg`;
+        bovinos.push(datos);
+        alert("Bovino registrado correctamente.");
     }
 
-    const observacion = bovinos.filter(
-        bovino => bovino.salud === "En observación"
-    ).length;
+    guardarBovinos();
+    evento.target.reset();
+    actualizarEstadisticas();
+    cambiarVista("bovinos");
+});
 
-    document.getElementById("enObservacion").textContent = observacion;
+function editarBovino(identificacion) {
+    const bovino = bovinos.find(b => b.identificacion === identificacion);
+
+    if (!bovino) return;
+
+    editando = identificacion;
+
+    document.getElementById("identificacion").value = bovino.identificacion;
+    document.getElementById("nombre").value = bovino.nombre;
+    document.getElementById("raza").value = bovino.raza;
+    document.getElementById("sexo").value = bovino.sexo;
+    document.getElementById("edad").value = bovino.edad;
+    document.getElementById("peso").value = bovino.peso;
+    document.getElementById("color").value = bovino.color;
+    document.getElementById("salud").value = bovino.salud;
+    document.getElementById("observaciones").value = bovino.observaciones || "";
+
+    cambiarVista("registro");
 }
 
-// Análisis de alimentación
-function analizarAlimentacion() {
-    const contenedor = document.getElementById("analisisAlimentacion");
+function eliminarBovino(identificacion) {
+    const confirmar = confirm("¿Estás seguro de eliminar este bovino?");
 
-    if (bovinos.length === 0) {
-        contenedor.innerHTML = "<p>No hay información disponible.</p>";
-        return;
-    }
+    if (!confirmar) return;
 
-    const lista = document.createElement("ul");
+    bovinos = bovinos.filter(b => b.identificacion !== identificacion);
 
-    bovinos.forEach(bovino => {
-        const elemento = document.createElement("li");
-
-        elemento.textContent =
-            `${bovino.identificacion}: ${bovino.alimentacion}. ` +
-            `Peso registrado: ${bovino.peso} kg.`;
-
-        lista.appendChild(elemento);
-    });
-
-    contenedor.replaceChildren(lista);
-}
-
-// Análisis sanitario
-function analizarSalud() {
-    const contenedor = document.getElementById("analisisSalud");
-
-    if (bovinos.length === 0) {
-        contenedor.innerHTML = "<p>No hay información disponible.</p>";
-        return;
-    }
-
-    const lista = document.createElement("ul");
-
-    bovinos.forEach(bovino => {
-        const elemento = document.createElement("li");
-
-        elemento.textContent =
-            `${bovino.identificacion}: estado de salud ${bovino.salud}.`;
-
-        lista.appendChild(elemento);
-    });
-
-    contenedor.replaceChildren(lista);
-}
-
-// Tratamientos registrados
-function analizarMedicamentos() {
-    const contenedor = document.getElementById("analisisMedicamentos");
-
-    if (bovinos.length === 0) {
-        contenedor.innerHTML = "<p>No hay información disponible.</p>";
-        return;
-    }
-
-    const lista = document.createElement("ul");
-
-    bovinos.forEach(bovino => {
-        const elemento = document.createElement("li");
-
-        elemento.textContent =
-            `${bovino.identificacion}: ${
-                bovino.medicamentos || "Sin tratamiento registrado"
-            }.`;
-
-        lista.appendChild(elemento);
-    });
-
-    contenedor.replaceChildren(lista);
-}
-
-// Actualizar aplicación
-function actualizarAplicacion() {
+    guardarBovinos();
     mostrarBovinos();
     actualizarEstadisticas();
-    analizarAlimentacion();
-    analizarSalud();
-    analizarMedicamentos();
 }
 
-// Inicializar
-actualizarAplicacion();
-actualizarCuenta();
+// ANALISIS DE DATOS
+
+function obtenerDatosAnalisis(tipo) {
+    let etiquetas = [];
+    let cantidades = [];
+
+    if (tipo === "sexo") {
+        etiquetas = ["Machos", "Hembras"];
+        cantidades = [
+            bovinos.filter(b => b.sexo === "Macho").length,
+            bovinos.filter(b => b.sexo === "Hembra").length
+        ];
+    }
+
+    if (tipo === "raza") {
+        const conteo = {};
+
+        bovinos.forEach(b => {
+            conteo[b.raza] = (conteo[b.raza] || 0) + 1;
+        });
+
+        etiquetas = Object.keys(conteo);
+        cantidades = Object.values(conteo);
+    }
+
+    if (tipo === "salud") {
+        const estados = ["Saludable", "En observación", "En tratamiento"];
+
+        etiquetas = estados;
+        cantidades = estados.map(estado =>
+            bovinos.filter(b => b.salud === estado).length
+        );
+    }
+
+    if (tipo === "peso") {
+        const rangos = [
+            { nombre: "Menos de 400 kg", condicion: b => b.peso < 400 },
+            { nombre: "400 a 499 kg", condicion: b => b.peso >= 400 && b.peso < 500 },
+            { nombre: "500 a 599 kg", condicion: b => b.peso >= 500 && b.peso < 600 },
+            { nombre: "600 kg o más", condicion: b => b.peso >= 600 }
+        ];
+
+        etiquetas = rangos.map(r => r.nombre);
+        cantidades = rangos.map(r =>
+            bovinos.filter(r.condicion).length
+        );
+    }
+
+    if (tipo === "edad") {
+        const rangos = [
+            { nombre: "Menos de 12 meses", condicion: b => b.edad < 12 },
+            { nombre: "12 a 23 meses", condicion: b => b.edad >= 12 && b.edad < 24 },
+            { nombre: "24 a 35 meses", condicion: b => b.edad >= 24 && b.edad < 36 },
+            { nombre: "36 a 47 meses", condicion: b => b.edad >= 36 && b.edad < 48 },
+            { nombre: "48 meses o más", condicion: b => b.edad >= 48 }
+        ];
+
+        etiquetas = rangos.map(r => r.nombre);
+        cantidades = rangos.map(r =>
+            bovinos.filter(r.condicion).length
+        );
+    }
+
+    return { etiquetas, cantidades };
+}
+
+function crearAnalisis() {
+    if (typeof Chart === "undefined") {
+        alert("No se pudo cargar Chart.js. Revisa tu conexión a internet.");
+        return;
+    }
+
+    if (bovinos.length === 0) {
+        document.getElementById("contenedorGrafica").classList.add("oculto");
+        document.getElementById("mensajeAnalisis").textContent =
+            "No hay bovinos registrados para generar un análisis.";
+        document.getElementById("mensajeAnalisis").classList.remove("oculto");
+        return;
+    }
+
+    const tipo = document.getElementById("tipoAnalisis").value;
+    const datos = obtenerDatosAnalisis(tipo);
+
+    const nombres = {
+        sexo: "Distribución de bovinos por sexo",
+        raza: "Distribución de bovinos por raza",
+        salud: "Distribución por estado de salud",
+        peso: "Clasificación de bovinos por peso",
+        edad: "Clasificación de bovinos por edad"
+    };
+
+    if (graficaActual) {
+        graficaActual.destroy();
+    }
+
+    document.getElementById("tituloGrafica").textContent = nombres[tipo];
+
+    document.getElementById("descripcionGrafica").textContent =
+        "Distribución de los " + bovinos.length +
+        " bovinos registrados en la finca.";
+
+    document.getElementById("totalAnalizado").textContent =
+        "Total de bovinos analizados: " + bovinos.length;
+
+    document.getElementById("contenedorGrafica").classList.remove("oculto");
+    document.getElementById("mensajeAnalisis").classList.add("oculto");
+
+    const contexto = document.getElementById("graficaTorta");
+
+    graficaActual = new Chart(contexto, {
+        type: "pie",
+        data: {
+            labels: datos.etiquetas,
+            datasets: [{
+                data: datos.cantidades,
+                backgroundColor: [
+                    "#1d6eae",
+                    "#4b9bd1",
+                    "#83bce3",
+                    "#123b66",
+                    "#a9d3ef",
+                    "#5d83ad",
+                    "#9db3cb"
+                ],
+                borderColor: "#ffffff",
+                borderWidth: 3
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: "bottom"
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            const cantidad = context.raw;
+                            const total = context.dataset.data.reduce(
+                                (suma, valor) => suma + valor, 0
+                            );
+
+                            const porcentaje = total > 0
+                                ? ((cantidad / total) * 100).toFixed(1)
+                                : 0;
+
+                            return `${context.label}: ${cantidad} bovinos (${porcentaje}%)`;
+                        }
+                    }
+                }
+            }
+        }
+    });
+}
+
+document.getElementById("btnCrearAnalisis")
+    .addEventListener("click", crearAnalisis);
+
+// CUENTAS DE USUARIO
+
+document.getElementById("btnCuenta").addEventListener("click", () => {
+    document.getElementById("menuCuenta").classList.toggle("oculto");
+});
+
+function abrirModal(modo) {
+    modoCuenta = modo;
+
+    document.getElementById("modalCuenta").classList.remove("oculto");
+    document.getElementById("menuCuenta").classList.add("oculto");
+    document.getElementById("formCuenta").reset();
+
+    const esRegistro = modo === "registro";
+
+    document.getElementById("tituloModal").textContent =
+        esRegistro ? "Crear cuenta" : "Iniciar sesión";
+
+    document.getElementById("btnEnviarCuenta").textContent =
+        esRegistro ? "Crear cuenta" : "Iniciar sesión";
+
+    document.getElementById("camposRegistro")
+        .classList.toggle("oculto", !esRegistro);
+
+    document.getElementById("dueno").required = esRegistro;
+    document.getElementById("nombreFinca").required = esRegistro;
+}
+
+document.getElementById("btnCrearCuenta").addEventListener("click", () => {
+    abrirModal("registro");
+});
+
+document.getElementById("btnIniciarSesion").addEventListener("click", () => {
+    abrirModal("login");
+});
+
+document.getElementById("cerrarModal").addEventListener("click", () => {
+    document.getElementById("modalCuenta").classList.add("oculto");
+});
+
+document.getElementById("formCuenta").addEventListener("submit", evento => {
+    evento.preventDefault();
+
+    const usuario = document.getElementById("usuario").value.trim();
+    const contrasena = document.getElementById("contrasena").value;
+
+    if (modoCuenta === "registro") {
+        const existe = usuarios.some(u => u.usuario === usuario);
+
+        if (existe) {
+            alert("Este usuario ya existe. Elige otro.");
+            return;
+        }
+
+        usuarios.push({
+            dueno: document.getElementById("dueno").value.trim(),
+            nombreFinca: document.getElementById("nombreFinca").value.trim(),
+            usuario,
+            contrasena
+        });
+
+        guardarUsuarios();
+        alert("Cuenta creada correctamente.");
+    } else {
+        const encontrado = usuarios.find(u =>
+            u.usuario === usuario && u.contrasena === contrasena
+        );
+
+        if (!encontrado) {
+            alert("Usuario o contraseña incorrectos.");
+            return;
+        }
+
+        sessionStorage.setItem("usuarioActivo", usuario);
+        alert(`Bienvenido a Mi Finca Digital, ${encontrado.dueno}.`);
+    }
+
+    document.getElementById("modalCuenta").classList.add("oculto");
+    evento.target.reset();
+});
+
+document.getElementById("btnCerrarSesion").addEventListener("click", () => {
+    sessionStorage.removeItem("usuarioActivo");
+    alert("Sesión cerrada correctamente.");
+    document.getElementById("menuCuenta").classList.add("oculto");
+});
+
+actualizarEstadisticas();

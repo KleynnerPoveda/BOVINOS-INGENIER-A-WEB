@@ -6,262 +6,271 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mi Finca Digital</title>
     <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
 
-    <header class="header">
-        <div class="brand">
-            <img src="toro.png" alt="Logo de Mi Finca Digital" class="logo">
-            <div>
-                <h1>Mi Finca Digital</h1>
-                <p>Gestión y análisis de datos ganaderos</p>
-            </div>
+    <header class="encabezado">
+        <div class="logo">
+            <img src="toro.png" alt="Logo de Mi Finca Digital">
+            <h2>Mi Finca Digital</h2>
         </div>
 
-        <div class="account-container">
-            <button id="accountButton" class="account-button">
-                <span id="accountName">Mi cuenta</span>
-                <span>▼</span>
-            </button>
+        <nav>
+            <button class="nav-btn activo" data-vista="inicio">Inicio</button>
+            <button class="nav-btn" data-vista="registro">Registrar bovino</button>
+            <button class="nav-btn" data-vista="bovinos">Bovinos registrados</button>
+            <button class="nav-btn" data-vista="analisis">Análisis</button>
+        </nav>
 
-            <div id="accountMenu" class="account-menu">
-                <div id="accountOptions">
-                    <button type="button" id="showLogin">Iniciar sesión</button>
-                    <button type="button" id="showCreate">Crear cuenta</button>
-                </div>
-
-                <div id="accountFormContainer" class="account-form-container hidden">
-                    <h3 id="accountFormTitle">Iniciar sesión</h3>
-
-                    <form id="accountForm">
-                        <div class="account-field" id="nameField">
-                            <label for="userName">Nombre</label>
-                            <input type="text" id="userName">
-                        </div>
-
-                        <div class="account-field">
-                            <label for="userEmail">Correo electrónico</label>
-                            <input type="email" id="userEmail" required>
-                        </div>
-
-                        <div class="account-field">
-                            <label for="userPassword">Contraseña</label>
-                            <input type="password" id="userPassword" required>
-                        </div>
-
-                        <button type="submit" class="primary-button" id="accountSubmit">
-                            Iniciar sesión
-                        </button>
-                    </form>
-
-                    <button type="button" id="backAccount" class="back-button">
-                        Volver
-                    </button>
-                </div>
-
-                <button type="button" id="logoutButton" class="logout-button hidden">
-                    Cerrar sesión
-                </button>
+        <div class="cuenta">
+            <button id="btnCuenta" class="btn-cuenta">Mi cuenta ▼</button>
+            <div id="menuCuenta" class="menu-cuenta oculto">
+                <button id="btnCrearCuenta">Crear cuenta</button>
+                <button id="btnIniciarSesion">Iniciar sesión</button>
+                <button id="btnCerrarSesion">Cerrar sesión</button>
             </div>
         </div>
     </header>
 
     <main>
 
-        <section class="welcome">
-            <div class="welcome-content">
-                <span class="welcome-label">GESTIÓN GANADERA DIGITAL</span>
-
-                <h2>Bienvenido a tu finca digital</h2>
-
-                <p>
-                    ¿Qué nuevos registros quieres agregar el día de hoy?
-                </p>
-
-                <button id="goToRegistration" class="welcome-button">
-                    Comenzar registros
-                    <span>↓</span>
-                </button>
+        <section id="inicio" class="vista activa">
+            <div class="bienvenida">
+                <h1>Bienvenido a tu finca digital</h1>
+                <p>¿Qué nuevos registros quieres agregar el día de hoy?</p>
+                <button class="btn-principal" data-ir="registro">Registrar bovino</button>
             </div>
-        </section>
 
-        <div class="container">
-
-            <section class="summary">
-                <div class="summary-card">
+            <div class="estadisticas">
+                <div class="tarjeta-estadistica">
                     <h3>Total de bovinos</h3>
                     <p id="totalBovinos">0</p>
                 </div>
 
-                <div class="summary-card">
-                    <h3>Peso promedio</h3>
-                    <p id="pesoPromedio">0 kg</p>
+                <div class="tarjeta-estadistica">
+                    <h3>Machos</h3>
+                    <p id="totalMachos">0</p>
                 </div>
 
-                <div class="summary-card">
-                    <h3>En observación</h3>
-                    <p id="enObservacion">0</p>
+                <div class="tarjeta-estadistica">
+                    <h3>Hembras</h3>
+                    <p id="totalHembras">0</p>
                 </div>
-            </section>
+            </div>
+        </section>
 
-            <nav class="navigation">
-                <button class="nav-button active" data-section="registro">
-                    Registrar bovino
-                </button>
+        <section id="registro" class="vista">
+            <div class="contenedor">
+                <h1>Registrar nuevo bovino</h1>
 
-                <button class="nav-button" data-section="datos">
-                    Datos registrados
-                </button>
+                <form id="formBovino">
 
-                <button class="nav-button" data-section="analisis">
-                    Alimentación y medicamentos
-                </button>
-            </nav>
-
-            <section id="registro" class="section active">
-                <div class="panel">
-                    <h2>Registro de bovinos</h2>
-                    <p>Ingresa la información correspondiente al animal.</p>
-
-                    <form id="formBovino">
-                        <div class="form-grid">
-
-                            <div class="form-group">
-                                <label for="identificacion">Identificación</label>
-                                <input type="text" id="identificacion" required>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="peso">Peso (kg)</label>
-                                <input type="number" id="peso" min="0" step="0.1" required>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="color">Color</label>
-                                <input type="text" id="color" required>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="sexo">Sexo</label>
-                                <select id="sexo" required>
-                                    <option value="">Seleccionar</option>
-                                    <option value="Macho">Macho</option>
-                                    <option value="Hembra">Hembra</option>
-                                </select>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="edad">Edad (años)</label>
-                                <input type="number" id="edad" min="0" step="0.1" required>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="raza">Raza</label>
-                                <input type="text" id="raza" required>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="salud">Estado de salud</label>
-                                <select id="salud" required>
-                                    <option value="">Seleccionar</option>
-                                    <option value="Bueno">Bueno</option>
-                                    <option value="En observación">En observación</option>
-                                    <option value="Enfermo">Enfermo</option>
-                                </select>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="alimentacion">Alimentación</label>
-                                <input type="text" id="alimentacion" required>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="medicamentos">Medicamentos o tratamientos</label>
-                                <input type="text" id="medicamentos">
-                            </div>
-
-                        </div>
-
-                        <button type="submit" class="primary-button">
-                            Registrar bovino
-                        </button>
-                    </form>
-                </div>
-            </section>
-
-            <section id="datos" class="section">
-                <div class="panel">
-                    <h2>Datos registrados</h2>
-                    <p>Consulta y administra la información de los bovinos registrados.</p>
-
-                    <div class="table-container">
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>Identificación</th>
-                                    <th>Peso</th>
-                                    <th>Color</th>
-                                    <th>Sexo</th>
-                                    <th>Edad</th>
-                                    <th>Raza</th>
-                                    <th>Salud</th>
-                                    <th>Alimentación</th>
-                                    <th>Tratamiento</th>
-                                    <th>Acciones</th>
-                                </tr>
-                            </thead>
-
-                            <tbody id="tablaBovinos"></tbody>
-                        </table>
+                    <div class="grupo-formulario">
+                        <label for="identificacion">Identificación</label>
+                        <input type="text" id="identificacion" required placeholder="Ej. BOV-007">
                     </div>
 
-                    <p id="mensajeSinDatos" class="empty-message">
-                        No hay bovinos registrados.
-                    </p>
-                </div>
-            </section>
-
-            <section id="analisis" class="section">
-                <div class="panel">
-                    <h2>Análisis de alimentación y medicamentos</h2>
-                    <p>
-                        Consulta información general sobre la alimentación y el
-                        seguimiento sanitario de los bovinos registrados.
-                    </p>
-
-                    <div class="analysis-grid">
-                        <div class="analysis-card">
-                            <h3>Alimentación</h3>
-                            <div id="analisisAlimentacion">
-                                <p>No hay información disponible.</p>
-                            </div>
-                        </div>
-
-                        <div class="analysis-card">
-                            <h3>Seguimiento sanitario</h3>
-                            <div id="analisisSalud">
-                                <p>No hay información disponible.</p>
-                            </div>
-                        </div>
-
-                        <div class="analysis-card">
-                            <h3>Tratamientos registrados</h3>
-                            <div id="analisisMedicamentos">
-                                <p>No hay información disponible.</p>
-                            </div>
-                        </div>
+                    <div class="grupo-formulario">
+                        <label for="nombre">Nombre</label>
+                        <input type="text" id="nombre" required placeholder="Nombre del bovino">
                     </div>
 
-                    <p class="notice">
-                        La información presentada es orientativa. Las decisiones
-                        sobre alimentación y tratamientos deben ser revisadas por
-                        un profesional veterinario o especialista en nutrición animal.
-                    </p>
-                </div>
-            </section>
+                    <div class="grupo-formulario">
+                        <label for="raza">Raza</label>
+                        <select id="raza" required>
+                            <option value="">Seleccionar raza</option>
+                            <option>Holstein</option>
+                            <option>Brahman</option>
+                            <option>Jersey</option>
+                            <option>Angus</option>
+                            <option>Simmental</option>
+                            <option>Gyr</option>
+                            <option>Normando</option>
+                            <option>Charolais</option>
+                            <option>Guzerat</option>
+                            <option>Criollo</option>
+                            <option>Otra</option>
+                        </select>
+                    </div>
 
-        </div>
+                    <div class="grupo-formulario">
+                        <label for="sexo">Sexo</label>
+                        <select id="sexo" required>
+                            <option value="">Seleccionar sexo</option>
+                            <option value="Macho">Macho</option>
+                            <option value="Hembra">Hembra</option>
+                        </select>
+                    </div>
+
+                    <div class="grupo-formulario">
+                        <label for="edad">Edad (meses)</label>
+                        <input type="number" id="edad" min="0" required>
+                    </div>
+
+                    <div class="grupo-formulario">
+                        <label for="peso">Peso (kg)</label>
+                        <input type="number" id="peso" min="0" step="0.1" required>
+                    </div>
+
+                    <div class="grupo-formulario">
+                        <label for="color">Color</label>
+                        <input type="text" id="color" required>
+                    </div>
+
+                    <div class="grupo-formulario">
+                        <label for="salud">Estado de salud</label>
+                        <select id="salud" required>
+                            <option value="">Seleccionar estado</option>
+                            <option>Saludable</option>
+                            <option>En observación</option>
+                            <option>En tratamiento</option>
+                        </select>
+                    </div>
+
+                    <div class="grupo-formulario completo">
+                        <label for="observaciones">Observaciones</label>
+                        <textarea id="observaciones" rows="3" placeholder="Información adicional"></textarea>
+                    </div>
+
+                    <button type="submit" class="btn-principal completo">Guardar bovino</button>
+                </form>
+            </div>
+        </section>
+
+        <section id="bovinos" class="vista">
+            <div class="contenedor">
+                <h1>Bovinos registrados</h1>
+                <p class="descripcion">Consulta, busca, filtra y organiza los registros de tu finca.</p>
+
+                <div class="panel-filtros">
+                    <div class="grupo-filtro busqueda">
+                        <label for="buscarBovino">Buscar bovino</label>
+                        <input type="text" id="buscarBovino" placeholder="Buscar por nombre o identificación...">
+                    </div>
+
+                    <div class="grupo-filtro">
+                        <label for="filtroSexo">Filtrar por sexo</label>
+                        <select id="filtroSexo">
+                            <option value="Todos">Todos</option>
+                            <option value="Macho">Machos</option>
+                            <option value="Hembra">Hembras</option>
+                        </select>
+                    </div>
+
+                    <div class="grupo-filtro">
+                        <label for="ordenarBovinos">Ordenar registros</label>
+                        <select id="ordenarBovinos">
+                            <option value="reciente">Más recientes</option>
+                            <option value="pesoMenor">Menor peso</option>
+                            <option value="pesoMayor">Mayor peso</option>
+                            <option value="edadMenor">Menor edad</option>
+                            <option value="edadMayor">Mayor edad</option>
+                            <option value="nombre">Nombre A-Z</option>
+                        </select>
+                    </div>
+
+                    <button id="btnLimpiarFiltros" class="btn-secundario">Limpiar filtros</button>
+                </div>
+
+                <p id="contadorResultados" class="contador-resultados"></p>
+
+                <div class="tabla-contenedor">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Identificación</th>
+                                <th>Nombre</th>
+                                <th>Raza</th>
+                                <th>Sexo</th>
+                                <th>Edad</th>
+                                <th>Peso</th>
+                                <th>Color</th>
+                                <th>Salud</th>
+                                <th>Observaciones</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tablaBovinos"></tbody>
+                    </table>
+                </div>
+
+                <div id="mensajeSinResultados" class="mensaje-vacio oculto">
+                    No se encontraron bovinos con esos criterios.
+                </div>
+            </div>
+        </section>
+
+        <section id="analisis" class="vista">
+            <div class="contenedor">
+                <h1>Análisis de bovinos</h1>
+                <p class="descripcion">
+                    Genera gráficos para conocer la distribución y características de los bovinos registrados.
+                </p>
+
+                <div class="panel-analisis">
+                    <div class="grupo-filtro">
+                        <label for="tipoAnalisis">Seleccionar tipo de análisis</label>
+                        <select id="tipoAnalisis">
+                            <option value="sexo">Distribución por sexo</option>
+                            <option value="raza">Distribución por raza</option>
+                            <option value="salud">Estado de salud</option>
+                            <option value="peso">Clasificación por peso</option>
+                            <option value="edad">Clasificación por edad</option>
+                        </select>
+                    </div>
+
+                    <button id="btnCrearAnalisis" class="btn-principal">
+                        Crear análisis
+                    </button>
+                </div>
+
+                <div id="contenedorGrafica" class="contenedor-grafica oculto">
+                    <h2 id="tituloGrafica">Análisis</h2>
+                    <p id="descripcionGrafica"></p>
+
+                    <div class="grafica">
+                        <canvas id="graficaTorta"></canvas>
+                    </div>
+
+                    <p id="totalAnalizado" class="total-analizado"></p>
+                </div>
+
+                <div id="mensajeAnalisis" class="mensaje-vacio">
+                    Selecciona un tipo de análisis y presiona "Crear análisis".
+                </div>
+            </div>
+        </section>
+
     </main>
+
+    <div id="modalCuenta" class="modal oculto">
+        <div class="modal-contenido">
+            <button id="cerrarModal" class="cerrar-modal">×</button>
+
+            <h2 id="tituloModal">Crear cuenta</h2>
+
+            <form id="formCuenta">
+                <div id="camposRegistro">
+                    <label for="dueno">Nombre del propietario</label>
+                    <input type="text" id="dueno" placeholder="Nombre completo">
+
+                    <label for="nombreFinca">Nombre de la finca</label>
+                    <input type="text" id="nombreFinca" placeholder="Nombre de la finca">
+                </div>
+
+                <label for="usuario">Usuario</label>
+                <input type="text" id="usuario" required>
+
+                <label for="contrasena">Contraseña</label>
+                <input type="password" id="contrasena" required>
+
+                <button type="submit" class="btn-principal" id="btnEnviarCuenta">
+                    Crear cuenta
+                </button>
+            </form>
+        </div>
+    </div>
 
     <script src="script.js"></script>
 </body>
